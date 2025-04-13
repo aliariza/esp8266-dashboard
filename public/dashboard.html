@@ -50,7 +50,7 @@
     }
 
     async function sendCommand(cmd) {
-      console.log("Sending command:", cmd); // 👈 Add this line
+      console.log("Sending command:", cmd); 
       const res = await fetch('/api/command', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
