@@ -26,6 +26,17 @@ wss.on("connection", function connection(ws) {
     console.log("❌ WebSocket client disconnected");
     wsClient = null;
   });
+  ws.on("message", (msg) => {
+    try {
+      const data = JSON.parse(msg);
+      if (data.temperature) {
+        latestData = data;
+        console.log("🌡️ Temp from ESP:", latestData);
+      }
+    } catch (err) {
+      console.error("⚠️ Bad WebSocket message:", msg);
+    }
+  });
 });
 
 // === API Routes ===
