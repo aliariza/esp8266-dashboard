@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ESP8266 IoT Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 2rem;
+      background-color: #f0f0f0;
+    }
+    h1 {
+      color: #333;
+    }
+    .temperature {
+      font-size: 2rem;
+      margin: 1rem 0;
+    }
+    .button {
+      padding: 1rem 2rem;
+      font-size: 1rem;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      margin-top: 1rem;
+      cursor: pointer;
+    }
+    .button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <h1>ESP8266 Dashboard</h1>
+  <div class="temperature">Current Temp: <span id="temp">--</span> °C</div>
+  <button class="button" onclick="sendCommand('toggle')">Toggle LED</button>
+
+  <script>
+    async function fetchData() {
+      try {
+        const res = await fetch('/api/data');
+        const data = await res.json();
+        document.getElementById('temp').innerText = data.temperature ?? '--';
+      } catch (e) {
+        document.getElementById('temp').innerText = '--';
+      }
+    }
+
+    async function sendCommand(cmd) {
+      console.log("Sending command:", cmd); // 👈 Add this line
+      const res = await fetch('/api/command', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ command: cmd })
+      });
+
+      const text = await res.text();
+      console.log("Server response:", text);
+}
+    setInterval(fetchData, 5000);
+    fetchData();
+  </script>
+</body>
+</html>
